@@ -18,10 +18,10 @@ class Email extends mandrillapi.api.Email {
   var to: mandrillapi.api.User = null
   var template: String = null
   var subject: String = null
-  var htmlContent: String = null
   var googleDomain = List[String]()
   var googleCampaign: String = null
   var mergeVars = scala.collection.mutable.Map[String, String]()
+  var tpltContent = scala.collection.mutable.Map[String, String]()
 
   private val mapper = new ObjectMapper
   mapper.setPropertyNamingStrategy(new LowerCaseWithUnderscoresStrategy)
@@ -50,8 +50,8 @@ class Email extends mandrillapi.api.Email {
     mergeVars.put(name, value)
     this
   }
-  def setHtmlContent(content: String): Email = {
-    htmlContent = content
+  def addTemplateContent(name: String, value: String): Email = { 
+    tpltContent.put(name, value)
     this
   }
   def setGoogleAnalyticsCampaign(s: String): Email = {
@@ -67,7 +67,16 @@ class Email extends mandrillapi.api.Email {
     val msg = new mandrillapi.api.mandrill.SendTemplate {
       def getKey = Email.config.getString("mandrillapi.key")
       def getTemplateName = template;
-      def getTemplateContent = List[mandrillapi.api.mandrill.SendTemplate.ContentVar]().asJava
+      def getTemplateContent = {
+        tpltContent.map { kv => 
+          new mandrillapi.api.mandrill.SendTemplate.ContentVar {
+            def getName = kv._1
+            def getContent = kv._2
+          }
+        }
+        .toList
+        .asJava
+      }
       def getMessage = new mandrillapi.api.mandrill.SendTemplate.Message {
         def getSubject = null
         def getFromEmail = Email.config.getString("mandrillapi.sendTemplate.fromEmail")
@@ -82,7 +91,6 @@ class Email extends mandrillapi.api.Email {
           .toList
           .asJava
         }
-        def getHtml = htmlContent
         def getTo = Option(to)
           .map { toUser => {
             List(new mandrillapi.api.mandrill.SendTemplate.Message.To {
