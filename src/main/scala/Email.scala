@@ -19,7 +19,7 @@ class Email extends mandrillapi.api.Email {
   var template: String = null
   var subject: String = null
   var htmlContent: String = null
-  var googleDomain: List[String] = null
+  var googleDomain = List[String]()
   var googleCampaign: String = null
   var mergeVars = scala.collection.mutable.Map[String, String]()
 
