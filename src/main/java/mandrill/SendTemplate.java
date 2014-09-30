@@ -30,6 +30,9 @@ public interface SendTemplate {
             String getName();
             String getType();
         }
+
+        List<String> getGoogleAnalyticsDomains();
+        String getGoogleAnalyticsCampaign();
     }
     Message getMessage();
 }

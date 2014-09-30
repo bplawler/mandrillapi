@@ -17,7 +17,10 @@ object Email {
 class Email extends mandrillapi.api.Email {
   var to: mandrillapi.api.User = null
   var template: String = null
+  var subject: String = null
   var htmlContent: String = null
+  var googleDomain: List[String] = null
+  var googleCampaign: String = null
   var mergeVars = scala.collection.mutable.Map[String, String]()
 
   private val mapper = new ObjectMapper
@@ -39,12 +42,24 @@ class Email extends mandrillapi.api.Email {
     this.template = template
     this 
   }
+  def setSubject(subject: String): Email  = { 
+    this.subject = subject
+    this 
+  }
   def addMergeVariable(name: String, value: String): Email = { 
     mergeVars.put(name, value)
     this
   }
   def setHtmlContent(content: String): Email = {
     htmlContent = content
+    this
+  }
+  def setGoogleAnalyticsCampaign(s: String): Email = {
+    googleCampaign = s
+    this
+  }
+  def setGoogleAnalyticsDomain(s: String): Email = {
+    googleDomain = List(s)
     this
   }
 
@@ -81,6 +96,8 @@ class Email extends mandrillapi.api.Email {
           .getOrElse {
             throw new mandrillapi.api.ex.NoRecipient
           }
+        def getGoogleAnalyticsCampaign = googleCampaign
+        def getGoogleAnalyticsDomains = googleDomain.asJava
       }
     }
 
