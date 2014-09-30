@@ -7,6 +7,7 @@ import org.codehaus.jackson.map.PropertyNamingStrategy.LowerCaseWithUnderscoresS
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.HttpClientBuilder
+import org.apache.commons.io.output.ByteArrayOutputStream
 import com.typesafe.config.{ConfigException, ConfigFactory}
 
 object Email {
@@ -74,14 +75,17 @@ class Email extends mandrillapi.api.Email {
       val endpoint = "https://mandrillapp.com/api/1.0/messages/send-template.json"
       val post = new HttpPost(endpoint)
       val body = mapper.writeValueAsString(msg)
-      val input = new StringEntity(body)
+      val input = new StringEntity(body, "utf-8")
       input.setContentType("application/json")
       post.setEntity(input)
       System.out.println("sending body\n\n%s".format(body))
       val response = client.execute(post);
       if (response.getStatusLine.getStatusCode != 200) {
+        val baos = new ByteArrayOutputStream
+        response.getEntity.writeTo(baos)
         throw new Exception("Failed : HTTP error code : "
-          + response.getStatusLine().getStatusCode());
+          + response.getStatusLine().getStatusCode() + "\n"
+          + baos);
       }
     }
     catch {

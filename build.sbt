@@ -11,5 +11,6 @@ libraryDependencies ++= Seq (
   , "org.codehaus.jackson" % "jackson-mapper-asl" % "1.9.10"
   , "com.typesafe" % "config" % "1.0.2"
   , "org.apache.httpcomponents" % "httpclient" % "4.3.5"
+  , "commons-io" % "commons-io" % "2.4"
 )
 
