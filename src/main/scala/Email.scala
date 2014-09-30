@@ -17,11 +17,20 @@ object Email {
 class Email extends mandrillapi.api.Email {
   var to: mandrillapi.api.User = null
   var template: String = null
+  var htmlContent: String = null
   var mergeVars = scala.collection.mutable.Map[String, String]()
 
   private val mapper = new ObjectMapper
   mapper.setPropertyNamingStrategy(new LowerCaseWithUnderscoresStrategy)
 
+  def setTo(email: String) = {
+    to = new mandrillapi.api.User {
+      def getFirstName = null
+      def getLastName = null
+      def getEmail = email
+    }
+    this
+  }
   def setTo(user: mandrillapi.api.User) = {
     to = user
     this 
@@ -32,6 +41,10 @@ class Email extends mandrillapi.api.Email {
   }
   def addMergeVariable(name: String, value: String): Email = { 
     mergeVars.put(name, value)
+    this
+  }
+  def setHtmlContent(content: String): Email = {
+    htmlContent = content
     this
   }
 
@@ -54,6 +67,7 @@ class Email extends mandrillapi.api.Email {
           .toList
           .asJava
         }
+        def getHtml = htmlContent
         def getTo = Option(to)
           .map { toUser => {
             List(new mandrillapi.api.mandrill.SendTemplate.Message.To {

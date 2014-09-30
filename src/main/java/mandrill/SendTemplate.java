@@ -18,6 +18,7 @@ public interface SendTemplate {
     
     public static interface Message {
         String getSubject();
+        String getHtml();
         String getFromEmail();
         String getFromName();
 
