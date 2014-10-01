@@ -78,7 +78,7 @@ class Email extends mandrillapi.api.Email {
         .asJava
       }
       def getMessage = new mandrillapi.api.mandrill.SendTemplate.Message {
-        def getSubject = null
+        def getSubject = subject
         def getFromEmail = Email.config.getString("mandrillapi.sendTemplate.fromEmail")
         def getFromName = Email.config.getString("mandrillapi.sendTemplate.fromName")
         def getGlobalMergeVars = {
