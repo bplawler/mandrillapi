@@ -119,12 +119,19 @@ class Email extends mandrillapi.api.Email {
       post.setEntity(input)
       System.out.println("sending body\n\n%s".format(body))
       val response = client.execute(post);
+      val baos = new ByteArrayOutputStream
+      response.getEntity.writeTo(baos)
       if (response.getStatusLine.getStatusCode != 200) {
-        val baos = new ByteArrayOutputStream
-        response.getEntity.writeTo(baos)
         throw new Exception("Failed : HTTP error code : "
           + response.getStatusLine().getStatusCode() + "\n"
           + baos);
+      }
+      else {
+        Option(mapper.readTree(baos.toString))
+          .map { json => {
+            json.path("_id").getTextValue
+          }}
+          .getOrElse(null)
       }
     }
     catch {
