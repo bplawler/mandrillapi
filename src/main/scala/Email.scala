@@ -129,7 +129,8 @@ class Email extends mandrillapi.api.Email {
       else {
         Option(mapper.readTree(baos.toString))
           .map { json => {
-            json.path("_id").getTextValue
+            //     [ { _id: "asdf", ... } ]
+            json.get(0).get("_id").getTextValue
           }}
           .getOrElse(null)
       }
