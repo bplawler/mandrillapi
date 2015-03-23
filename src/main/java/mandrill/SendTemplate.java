@@ -1,6 +1,7 @@
 package mandrillapi.api.mandrill;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Immutable interface for sending on to Mandrill.
@@ -23,7 +24,7 @@ public interface SendTemplate {
 
         List<ContentVar> getGlobalMergeVars();
 
-        List<To> getTo();
+        Set<To> getTo();
         public static interface To {
             String getEmail();
             String getName();

@@ -15,7 +15,7 @@ object Email {
 }
 
 class Email extends mandrillapi.api.Email {
-  var to: mandrillapi.api.User = null
+  var to: Set[mandrillapi.api.User] = Set()
   var template: String = null
   var subject: String = null
   var googleDomain = List[String]()
@@ -26,16 +26,16 @@ class Email extends mandrillapi.api.Email {
   private val mapper = new ObjectMapper
   mapper.setPropertyNamingStrategy(new LowerCaseWithUnderscoresStrategy)
 
-  def setTo(email: String) = {
-    to = new mandrillapi.api.User {
+  def addTo(email: String) = {
+    to += new mandrillapi.api.User {
       def getFirstName = null
       def getLastName = null
       def getEmail = email
     }
     this
   }
-  def setTo(user: mandrillapi.api.User) = {
-    to = user
+  def addTo(user: mandrillapi.api.User) = {
+    to += user
     this 
   }
   def setTemplate(template: String): Email  = { 
@@ -91,19 +91,18 @@ class Email extends mandrillapi.api.Email {
           .toList
           .asJava
         }
-        def getTo = Option(to)
-          .map { toUser => {
-            List(new mandrillapi.api.mandrill.SendTemplate.Message.To {
+        def getTo = {
+          to.map { toUser => {
+            new mandrillapi.api.mandrill.SendTemplate.Message.To {
               def getEmail = toUser.getEmail
               def getName = List(Option(toUser.getFirstName), Option(toUser.getLastName))
                               .flatten
                               .mkString(" ")
               def getType = "to"
-            }).asJava
+            }
           }}
-          .getOrElse {
-            throw new mandrillapi.api.ex.NoRecipient
-          }
+          .asJava
+        }
         def getGoogleAnalyticsCampaign = googleCampaign
         def getGoogleAnalyticsDomains = googleDomain.asJava
       }
