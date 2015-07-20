@@ -2,8 +2,10 @@ package mandrillapi.impl
 
 import scala.collection.JavaConverters._
 
-import org.codehaus.jackson.map.ObjectMapper
-import org.codehaus.jackson.map.PropertyNamingStrategy.LowerCaseWithUnderscoresStrategy
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.PropertyNamingStrategy.LowerCaseWithUnderscoresStrategy
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.HttpClientBuilder
@@ -128,8 +130,21 @@ class Email extends mandrillapi.api.Email {
       else {
         Option(mapper.readTree(baos.toString))
           .map { json => {
-            //     [ { _id: "asdf", ... } ]
-            json.get(0).get("_id").getTextValue
+            json.elements.asScala.map { elem => 
+              @JsonSerialize(as=classOf[mandrillapi.api.mandrill.SendResponse])
+              class Response(n: JsonNode) 
+               extends mandrillapi.api.mandrill.SendResponse {
+                def getEmail = n.path("email").textValue
+                def getId = n.path("_id").textValue
+                def getStatus = n.path("status").textValue
+                def getRejectReason = n.path("rejectReason").textValue
+              }
+              new Response(elem)
+            }
+            .toList
+            .groupBy(_.getEmail)
+            .mapValues(_.head)
+            .asJava
           }}
           .getOrElse(null)
       }
