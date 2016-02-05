@@ -13,15 +13,4 @@ public interface Mandrill {
     * should contain.
     */
     Email newEmail();
-
-   /**
-    * Given an inbound JSON object, create a typed wrapper around it for getting
-    * access to the information contained within.
-    */
-    Webhook wrapWebhook(JsonNode o);
-
-   /**
-    * Applicaiton specific processing for an inbound webhook.
-    */
-    void processWebhook(Webhook w);
 }
