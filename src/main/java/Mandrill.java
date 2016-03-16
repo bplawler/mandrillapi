@@ -18,10 +18,10 @@ public interface Mandrill {
     * Given an inbound JSON object, create a typed wrapper around it for getting
     * access to the information contained within.
     */
-    Webhook wrapWebhook(JsonNode o);
+    mandrillapi.api.mandrill.Webhook wrapWebhook(JsonNode o);
 
    /**
     * Applicaiton specific processing for an inbound webhook.
     */
-    void processWebhook(Webhook w);
+    void processWebhook(mandrillapi.api.mandrill.Webhook w);
 }
