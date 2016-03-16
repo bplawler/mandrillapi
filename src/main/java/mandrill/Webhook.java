@@ -7,7 +7,6 @@ public interface Webhook {
     String getEvent();
     String getUrl();
     String getIp();
-    String getUserAgent();
     Location getLocation();
 
     public static interface Location {
