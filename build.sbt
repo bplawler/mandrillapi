@@ -12,5 +12,6 @@ libraryDependencies ++= Seq (
   , "com.typesafe" % "config" % "1.0.2"
   , "org.apache.httpcomponents" % "httpclient" % "4.3.5"
   , "commons-io" % "commons-io" % "2.4"
+  , "com.sendgrid" % "sendgrid-java" % "2.2.2"
 )
 

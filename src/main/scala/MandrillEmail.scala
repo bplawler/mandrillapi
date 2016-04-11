@@ -14,6 +14,8 @@ import com.typesafe.config.{ConfigException, ConfigFactory}
 
 object Email {
   val config = ConfigFactory.load()
+  val sendgrid = new com.sendgrid.SendGrid(
+    config.getString("sendgrid.transactionalApiKey"))
 }
 
 class Email extends mandrillapi.api.Email {
