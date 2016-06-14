@@ -3,6 +3,11 @@ package mandrillapi.impl
 import scala.collection.JavaConverters._
 import com.typesafe.config.{ConfigException, ConfigFactory}
 
+object SendGrid {
+  val api = new com.sendgrid.SendGrid(
+    Email.config.getString("sendgrid.transactionalApiKey"))
+}
+
 class SendgridEmail extends mandrillapi.api.Email {
   var to: Set[mandrillapi.api.User] = Set()
   var template: String = null
@@ -70,7 +75,7 @@ class SendgridEmail extends mandrillapi.api.Email {
     }
 
     val id = s"${to.head.getEmail}-${(new java.util.Date).getTime}"
-    Email.sendgrid.send(msg) match {
+    SendGrid.api.send(msg) match {
       case r: com.sendgrid.SendGrid.Response =>
         Map(id -> new mandrillapi.api.mandrill.SendResponse { 
           def getEmail = to.head.getEmail
